@@ -1,0 +1,48 @@
+<nav>
+    <link rel="stylesheet" href="/css/navbar.css">
+    <script src="https://kit.fontawesome.com/53f17480e1.js" crossorigin="anonymous"></script>
+    <script src="/js/underscore.js"></script>
+    <ul>
+        <li class="nav"><a><i class="fas fa-cloud"></i></a></li>
+        <li class="nav"><a><i class="fas fa-tasks"></i></a></li>
+    </ul>
+    <ul class="right">
+        <li class="nav"><a><i class="fas fa-cog"></i></a></li>
+    </ul>
+
+    <span id="selected"></span>
+</nav>
+
+<script>
+    let navs = _('.nav');
+    let navmap = ['filesystem', 'transfers', 'settings'];
+
+    let __activeView = 'filesystem';
+    let selected = _('#selected');
+
+    function updateNav() {
+        let path = window.location.pathname;
+        if (path != '/' && path.endsWith('/')) { path = path.slice(0, -1) }
+        navs.class('-active');
+        navs[navmap.indexOf(__activeView)].class('+active');
+        posCaret();
+    }
+
+    function posCaret() {
+        let active = _('.active');
+
+        let bounds = active.getBoundingClientRect();
+        let caretBounds = selected.getBoundingClientRect();
+
+        let x = bounds.x + (bounds.width / 2) - (caretBounds.width / 2);
+        let y = bounds.y + bounds.height;
+
+        selected.css('left', `${x}px`);
+        selected.css('top', `${y}px`);
+    }
+
+    for (let n = 0; n < navs.length; n++) { navs[n].on('click', function() { __activeView = navmap[n]; updateNav() }); }
+
+    window.addEventListener('load', updateNav);
+    window.addEventListener('resize', posCaret);
+</script>
